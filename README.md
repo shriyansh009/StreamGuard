@@ -186,6 +186,4 @@ All settings use the `STREAMGUARD_` environment variable prefix:
 | `STREAMGUARD_WORKER_BATCH_SIZE` | `50` | Messages per worker batch |
 | `STREAMGUARD_CACHE_TTL_SECONDS` | `300` | Analytics cache TTL |
 
-## License
 
-Confidential — Backend Portfolio Architecture
