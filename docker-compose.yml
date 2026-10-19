@@ -1,0 +1,83 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: streamguard-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: streamguard
+      POSTGRES_USER: streamguard
+      POSTGRES_PASSWORD: streamguard_secret
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U streamguard -d streamguard"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      streamguard-net:
+        aliases:
+          - db
+          - postgres
+
+  redis:
+    image: redis:7-alpine
+    container_name: streamguard-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    networks:
+      streamguard-net:
+        aliases:
+          - redis
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: streamguard-app
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - STREAMGUARD_DATABASE_URL=postgresql+asyncpg://streamguard:streamguard_secret@postgres:5432/streamguard
+      - STREAMGUARD_REDIS_URL=redis://redis:6379/0
+      - STREAMGUARD_JWT_SECRET=streamguard-dev-secret-change-in-production
+      - STREAMGUARD_JWT_ALGORITHM=HS256
+      - STREAMGUARD_RATE_LIMIT_MAX_VIOLATIONS=3
+      - STREAMGUARD_RATE_LIMIT_WINDOW_SECONDS=10
+      - STREAMGUARD_WORKER_BATCH_SIZE=50
+      - STREAMGUARD_WORKER_BLOCK_MS=5000
+      - STREAMGUARD_CACHE_TTL_SECONDS=300
+      - PYTHONUNBUFFERED=1
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - streamguard-net
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  streamguard-net:
+    driver: bridge
