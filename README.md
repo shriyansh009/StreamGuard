@@ -297,9 +297,12 @@ All settings use the `STREAMGUARD_` environment variable prefix:
 | `STREAMGUARD_CACHE_TTL_SECONDS` | `300` | Analytics cache TTL |
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 ---
 
 ## License
+=======
+>>>>>>> 27e716cb0f065125f0e3b2ae8548c996f678e693
 =======
 >>>>>>> 27e716cb0f065125f0e3b2ae8548c996f678e693
 
