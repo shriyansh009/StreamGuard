@@ -18,6 +18,10 @@ class Settings(BaseSettings):
         WORKER_BATCH_SIZE: Number of messages fetched per batch from Redis streams.
         WORKER_BLOCK_MS: Milliseconds to block waiting for new Redis stream events.
         CACHE_TTL_SECONDS: Default time-to-live in seconds for cached records in Redis.
+        FASTTEXT_MODEL_PATH: Optional path to a local FastText binary model file.
+        HUGGINGFACE_REPO_ID: Optional Hugging Face Hub repository containing a FastText model.
+        HUGGINGFACE_FILENAME: Model filename inside the Hugging Face repository.
+        HUGGINGFACE_TOKEN: Optional Hugging Face access token for private/gated models.
     """
 
     DATABASE_URL: str = Field(
@@ -55,6 +59,22 @@ class Settings(BaseSettings):
     CACHE_TTL_SECONDS: int = Field(
         default=300,
         description="Default TTL in seconds for cached entities in Redis.",
+    )
+    FASTTEXT_MODEL_PATH: str | None = Field(
+        default=None,
+        description="Local path to a pre-trained FastText .bin model file.",
+    )
+    HUGGINGFACE_REPO_ID: str | None = Field(
+        default=None,
+        description="Hugging Face Hub repository ID to download a pre-trained FastText model from.",
+    )
+    HUGGINGFACE_FILENAME: str = Field(
+        default="model.bin",
+        description="Filename of the FastText model within the Hugging Face repository.",
+    )
+    HUGGINGFACE_TOKEN: str | None = Field(
+        default=None,
+        description="Optional Hugging Face authentication token for private or gated models.",
     )
 
     model_config = SettingsConfigDict(

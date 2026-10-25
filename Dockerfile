@@ -14,6 +14,7 @@ WORKDIR /build
 # Install build dependencies required for compiling asyncpg, cryptography, etc.
 RUN apt-get update && apt-get install -y --no-install-recommends \
     gcc \
+    g++ \
     libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 

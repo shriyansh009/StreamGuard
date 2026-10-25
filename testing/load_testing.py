@@ -5,7 +5,7 @@ import websockets
 
 # Configuration settings matching your StreamGuard deployment
 WS_URL = "ws://localhost:8000/ws/chat/stress_test_room"
-TOTAL_MESSAGES = 1000
+TOTAL_MESSAGES = 10000
 CONCURRENT_CLIENTS = 10
 
 # Simulated JWT Token - Replace this with an actual valid token generated from /api/auth/login
